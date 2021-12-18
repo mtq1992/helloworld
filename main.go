@@ -20,9 +20,9 @@ func main() {
 	})
 
 	r.POST("/world", func(w http.ResponseWriter, req *http.Request) {
-
-		fmt.Fprintf(w, "Form Data = %q\n", len(req.Form))
-
+		for k, v := range req.Form {
+			fmt.Fprintf(w, "Form Data [%q] = %q\n", k, v)
+		}
 	})
 
 	r.Run(":9999")
