@@ -51,22 +51,22 @@ func (ctx *Context) String(code int, format string, values ...interface{}) {
 	ctx.Writer.Write([]byte(fmt.Sprintf(format, values...)))
 }
 
-func (c *Context) JSON(code int, obj interface{}) {
-	c.SetHeader("Content-Type", "application/json")
-	c.Status(code)
-	encoder := json.NewEncoder(c.Writer)
+func (ctx *Context) JSON(code int, obj interface{}) {
+	ctx.SetHeader("Content-Type", "application/json")
+	ctx.Status(code)
+	encoder := json.NewEncoder(ctx.Writer)
 	if err := encoder.Encode(obj); err != nil {
-		http.Error(c.Writer, err.Error(), 500)
+		http.Error(ctx.Writer, err.Error(), 500)
 	}
 }
 
-func (c *Context) Data(code int, data []byte) {
-	c.Status(code)
-	c.Writer.Write(data)
+func (ctx *Context) Data(code int, data []byte) {
+	ctx.Status(code)
+	ctx.Writer.Write(data)
 }
 
-func (c *Context) HTML(code int, html string) {
-	c.SetHeader("Content-Type", "text/html")
-	c.Status(code)
-	c.Writer.Write([]byte(html))
+func (ctx *Context) HTML(code int, html string) {
+	ctx.SetHeader("Content-Type", "text/html")
+	ctx.Status(code)
+	ctx.Writer.Write([]byte(html))
 }
