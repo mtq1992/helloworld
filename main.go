@@ -1,28 +1,24 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
-
 	"gee"
 )
 
 func main() {
 	r := gee.New()
-	r.GET("/", func(w http.ResponseWriter, req *http.Request) {
-		fmt.Fprintf(w, "URL.Path = %q\n", req.URL.Path)
+	r.GET("/", func(ctx *gee.Context) {
+		ctx.HTML(200, "<h1>hello world</h1>")
 	})
 
-	r.GET("/hello", func(w http.ResponseWriter, req *http.Request) {
-		for k, v := range req.Header {
-			fmt.Fprintf(w, "Header[%q] = %q\n", k, v)
-		}
+	r.GET("/hello", func(ctx *gee.Context) {
+		ctx.String(200, "hello &s, you at %s\n", ctx.Query("name"), ctx.Path)
 	})
 
-	r.POST("/world", func(w http.ResponseWriter, req *http.Request) {
-		for k, v := range req.Form {
-			fmt.Fprintf(w, "Form Data [%q] = %q\n", k, v)
-		}
+	r.POST("/login", func(ctx *gee.Context) {
+		ctx.JSON(200, gee.H{
+			"username": ctx.PostForm("username"),
+			"password": ctx.PostForm("password"),
+		})
 	})
 
 	r.Run(":9999")
