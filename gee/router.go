@@ -1,8 +1,6 @@
 package gee
 
 import (
-	"log"
-	"net/http"
 	"strings"
 )
 
@@ -89,13 +87,11 @@ func (r *router) handle(ctx *Context) {
 	if n != nil {
 		ctx.Params = params
 		key := ctx.Method + "-" + n.pattern
-		r.handlers[key](ctx)
-		log.Printf("Client %16s Route %4s - %s Query %s",
-			ctx.Req.RemoteAddr,
-			ctx.Method,
-			ctx.Path,
-			ctx.Req.URL.RawQuery)
+		ctx.handlers = append(ctx.handlers, r.handlers[key])
 	} else {
-		ctx.String(http.StatusNotFound, "404 NOT FOUND: %s\n", ctx.Path)
+		ctx.handlers = append(ctx.handlers, func(ctx *Context) {
+			ctx.String(404, "404 NOT FOUNND: %s\n", ctx.Path)
+		})
 	}
+	ctx.Next()
 }
